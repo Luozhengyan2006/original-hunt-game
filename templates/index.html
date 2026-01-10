@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>扭曲画猜 - Twist Draw Guess</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航 -->
+        <div class="header">
+            <h1 id="gameTitle">🎨 扭曲画猜</h1>
+            <div class="language-selector">
+                <button id="langBtn" onclick="switchLanguage()">🌐 English</button>
+            </div>
+        </div>
+
+        <!-- 主容器 -->
+        <div class="main-content">
+            <!-- 页面1: 开始界面 -->
+            <div id="page-welcome" class="page active">
+                <div class="welcome-box">
+                    <h2 id="welcomeTitle">欢迎来到扭曲画猜</h2>
+                    <p id="welcomeDesc">一个创意绘画和猜测游戏</p>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="showCreateGame()">
+                            <span id="createGameBtn">创建新游戏</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="showJoinGame()">
+                            <span id="joinGameBtn">加入游戏</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面2: 创建游戏 -->
+            <div id="page-create" class="page">
+                <div class="game-setup">
+                    <h2 id="createTitle">创建新游戏</h2>
+                    
+                    <div class="form-group">
+                        <label id="playerNameLabel">您的名字</label>
+                        <input type="text" id="creatorName" placeholder="输入您的名字">
+                    </div>
+
+                    <div class="form-group">
+                        <label id="languageLabel">游戏语言</label>
+                        <select id="gameLanguage">
+                            <option value="zh">中文 (Chinese)</option>
+                            <option value="en">英文 (English)</option>
+                        </select>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="createGame()">
+                            <span id="startGameBtn">开始游戏</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="backToWelcome()">
+                            <span id="backBtn">返回</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面3: 加入游戏 -->
+            <div id="page-join" class="page">
+                <div class="game-setup">
+                    <h2 id="joinTitle">加入游戏</h2>
+                    
+                    <div class="form-group">
+                        <label id="gameCodeLabel">游戏代码</label>
+                        <input type="text" id="gameCode" placeholder="输入游戏代码">
+                    </div>
+
+                    <div class="form-group">
+                        <label id="playerNameLabel2">您的名字</label>
+                        <input type="text" id="joinPlayerName" placeholder="输入您的名字">
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="joinGame()">
+                            <span id="joinGameBtnText">加入游戏</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="backToWelcome()">
+                            <span id="backBtn2">返回</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面4: 游戏大厅 -->
+            <div id="page-lobby" class="page">
+                <div class="lobby">
+                    <h2 id="lobbyTitle">游戏大厅</h2>
+                    <p id="gameCodeDisplay">游戏代码: <strong id="codeText">-</strong></p>
+                    
+                    <div class="players-list">
+                        <h3 id="playersLabel">玩家列表</h3>
+                        <div id="playersList" class="players">
+                            <!-- 动态生成 -->
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn btn-success" onclick="startGame()">
+                            <span id="startBtn">开始游戏</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="leaveLobby()">
+                            <span id="leaveBtn">离开</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面5: 修改关键词阶段 (仅绘图者) -->
+            <div id="page-modify-keywords" class="page">
+                <div class="game-container">
+                    <div class="game-header">
+                        <h2 id="modifyKeywordsTitle">修改关键词</h2>
+                        <p id="roundInfo">第 <span id="currentRound">1</span> 轮</p>
+                    </div>
+
+                    <div class="modify-area">
+                        <p id="modifyInstructions">您是绘图者！可以修改以下关键词来迷惑其他玩家：</p>
+                        
+                        <div class="keywords-list">
+                            <div id="originalKeywordsList" class="keywords-original">
+                                <p id="originalKeywordsLabel">原始关键词:</p>
+                                <div id="originalKeywords" class="keywords-display">
+                                    <!-- 动态生成 -->
+                                </div>
+                            </div>
+
+                            <div id="fakeKeywordsList" class="keywords-fake">
+                                <p id="fakeKeywordsLabel">修改为这些假关键词 (可选):</p>
+                                <div class="keyword-inputs">
+                                    <input type="text" id="fakeKeyword1" placeholder="关键词1 (可选修改)">
+                                    <input type="text" id="fakeKeyword2" placeholder="关键词2 (可选修改)">
+                                    <input type="text" id="fakeKeyword3" placeholder="关键词3 (可选修改)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn btn-success" onclick="submitFakeKeywords()" id="submitKeywordsBtn">确认并继续</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面6: 所有玩家绘画阶段 -->
+            <div id="page-all-drawing" class="page">
+                <div class="game-container">
+                    <div class="game-header">
+                        <h2 id="allDrawingTitle">绘画阶段</h2>
+                        <p id="roundInfo2">第 <span id="currentRound2">1</span> 轮</p>
+                    </div>
+
+                    <div class="drawing-area">
+                        <div class="keywords">
+                            <p id="drawKeywordsLabel">请绘制以下关键词之一:</p>
+                            <div id="keywordsList" class="keywords-display">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+
+                        <div class="canvas-container">
+                            <canvas id="canvas" width="600" height="400"></canvas>
+                            <div class="canvas-tools">
+                                <button class="tool-btn" onclick="clearCanvas()" id="clearBtn">清除画布</button>
+                                <button class="tool-btn" onclick="undoDrawing()" id="undoBtn">撤销</button>
+                                <div class="color-picker">
+                                    <input type="color" id="colorPicker" value="#000000" onchange="changeColor(this.value)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timer">
+                            <p id="timeLabel">剩余时间: <span id="timer">120</span>s</p>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" onclick="submitDrawing()" id="submitDrawingBtn">提交绘画</button>
+                </div>
+            </div>
+
+            <!-- 页面7: 游戏进行中 - 猜测阶段 (识别绘图者) -->
+            <div id="page-guessing" class="page">
+                <div class="game-container">
+                    <div class="game-header">
+                        <h2 id="guessingTitle">识别阶段</h2>
+                        <p id="roundInfo3">第 <span id="currentRound3">1</span> 轮</p>
+                    </div>
+
+                    <div class="guessing-area">
+                        <p id="guessingInstructions">看这些画，猜猜哪个是绘图者画的？</p>
+                        
+                        <div id="drawingsGallery" class="drawings-gallery">
+                            <!-- 动态生成多个绘画 -->
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn btn-success" id="submitGuessBtn" onclick="submitGuess()" disabled>提交猜测</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面8: 结果 -->
+            <div id="page-result" class="page">
+                <div class="game-container">
+                    <div class="result">
+                        <h2 id="resultTitle">本轮结果</h2>
+                        
+                        <div class="game-analysis">
+                            <div class="drawer-info">
+                                <p id="drawerLabel">绘图者:</p>
+                                <h3 id="drawerName">-</h3>
+                            </div>
+
+                            <div class="scoring-scenario">
+                                <p id="scenarioLabel">计分情景:</p>
+                                <p id="scenarioDescription">-</p>
+                            </div>
+                        </div>
+
+                        <div class="scores">
+                            <h3 id="scoresLabel">本轮分数</h3>
+                            <div id="scoresList">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+
+                        <div class="total-scores">
+                            <h3 id="totalScoresLabel">总分排名</h3>
+                            <div id="totalScoresList">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+
+                        <button class="btn btn-success" onclick="nextRound()" id="nextRoundBtn">下一轮</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面9: 游戏结束 -->
+            <div id="page-gameover" class="page">
+                <div class="game-container">
+                    <div class="result">
+                        <h2 id="gameOverTitle">游戏结束</h2>
+                        
+                        <div class="winner">
+                            <p id="winnerLabel">🏆 获胜者</p>
+                            <h3 id="winnerName">-</h3>
+                        </div>
+
+                        <div class="final-scores">
+                            <h3 id="finalScoresLabel">最终排名</h3>
+                            <div id="finalScoresList">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn btn-success" onclick="playAgain()">
+                                <span id="playAgainBtn">再玩一次</span>
+                            </button>
+                            <button class="btn btn-secondary" onclick="backToWelcome()">
+                                <span id="backToHomeBtn">返回首页</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 脚本 -->
+    <script src="{{ url_for('static', filename='game.js') }}"></script>
+</body>
+</html>

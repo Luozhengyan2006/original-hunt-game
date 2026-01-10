@@ -1,0 +1,756 @@
+/* ==================== 全局样式 ==================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+}
+
+/* ==================== 容器 ==================== */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+    font-size: 28px;
+    color: #667eea;
+}
+
+.language-selector {
+    display: flex;
+    gap: 10px;
+}
+
+.language-selector button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    background: #667eea;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.language-selector button:hover {
+    background: #764ba2;
+    transform: translateY(-2px);
+}
+
+/* ==================== 页面系统 ==================== */
+
+.main-content {
+    position: relative;
+    min-height: 500px;
+}
+
+.page {
+    display: none;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==================== 欢迎界面 ==================== */
+
+.welcome-box {
+    background: white;
+    padding: 60px 40px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    max-width: 500px;
+    margin: 50px auto;
+}
+
+.welcome-box h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+    color: #667eea;
+}
+
+.welcome-box p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 40px;
+}
+
+/* ==================== 表单样式 ==================== */
+
+.game-setup {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    max-width: 500px;
+    margin: 30px auto;
+}
+
+.game-setup h2 {
+    font-size: 24px;
+    margin-bottom: 30px;
+    color: #667eea;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* ==================== 按钮 ==================== */
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex: 1;
+    min-width: 150px;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+    border: 2px solid #ddd;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ==================== 游戏大厅 ==================== */
+
+.lobby {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+.lobby h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #667eea;
+    text-align: center;
+}
+
+#gameCodeDisplay {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 30px;
+    padding: 15px;
+    background: #f0f0f0;
+    border-radius: 5px;
+}
+
+#gameCodeDisplay strong {
+    color: #667eea;
+    font-size: 24px;
+}
+
+.players-list {
+    margin-bottom: 30px;
+}
+
+.players-list h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.players {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.player-item {
+    padding: 12px;
+    background: #f9f9f9;
+    border-radius: 5px;
+    border-left: 4px solid #667eea;
+    font-size: 14px;
+}
+
+/* ==================== 游戏容器 ==================== */
+
+.game-container {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    max-width: 800px;
+    margin: 30px auto;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.game-header h2 {
+    font-size: 24px;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.game-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+/* ==================== 绘画阶段 ==================== */
+
+.drawing-area {
+    margin-bottom: 30px;
+}
+
+.keywords {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 5px;
+}
+
+.keywords p {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.keywords-display {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.keyword-tag {
+    padding: 8px 16px;
+    background: #667eea;
+    color: white;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.canvas-container {
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    background: white;
+}
+
+#canvas {
+    display: block;
+    cursor: crosshair;
+    background: white;
+}
+
+.canvas-tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-top: 1px solid #ddd;
+}
+
+.tool-btn {
+    padding: 8px 16px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s;
+}
+
+.tool-btn:hover {
+    background: #5568d3;
+}
+
+.color-picker {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-picker input {
+    width: 50px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.timer {
+    text-align: center;
+    padding: 15px;
+    background: #fff3cd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.timer p {
+    font-size: 18px;
+    font-weight: 600;
+    color: #856404;
+}
+
+#timer {
+    color: #d32f2f;
+}
+
+/* ==================== 猜测阶段 ==================== */
+
+.guessing-area {
+    margin-bottom: 30px;
+}
+
+.drawing-display {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.drawing-display p {
+    margin-bottom: 10px;
+    color: #666;
+    font-size: 14px;
+}
+
+#drawingImage {
+    max-width: 100%;
+    max-height: 300px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+}
+
+.guess-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.guess-input input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.guess-input input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.guesses {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.guess-item {
+    padding: 12px;
+    background: #f9f9f9;
+    border-radius: 5px;
+    border-left: 4px solid #667eea;
+    font-size: 14px;
+}
+
+/* ==================== 结果页面 ==================== */
+
+.result {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+.result h2 {
+    font-size: 24px;
+    margin-bottom: 30px;
+    color: #667eea;
+    text-align: center;
+}
+
+.correct-answer,
+.winner {
+    text-align: center;
+    padding: 20px;
+    background: #f0f7ff;
+    border-radius: 5px;
+    margin-bottom: 30px;
+    border: 2px solid #667eea;
+}
+
+.correct-answer p,
+.winner p {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.correct-answer h3,
+.winner h3 {
+    font-size: 24px;
+    color: #667eea;
+}
+
+.scores,
+.total-scores,
+.final-scores {
+    margin-bottom: 30px;
+}
+
+.scores h3,
+.total-scores h3,
+.final-scores h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.score-item,
+.score-rank {
+    padding: 12px;
+    background: #f9f9f9;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.score-name {
+    font-weight: 600;
+}
+
+.score-points {
+    color: #667eea;
+    font-weight: 600;
+}
+
+/* ==================== 响应式设计 ==================== */
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .welcome-box {
+        padding: 40px 20px;
+    }
+
+    .game-setup {
+        padding: 20px;
+    }
+
+    .game-container {
+        padding: 20px;
+    }
+
+    #canvas {
+        width: 100%;
+        height: auto;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .drawings-gallery {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+/* ==================== 动画 ==================== */
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.pulse {
+    animation: pulse 0.5s ease-in-out;
+}
+
+/* ==================== 加载状态 ==================== */
+
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==================== 修改关键词页面 ==================== */
+
+.modify-area {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.modify-area p {
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #333;
+}
+
+.keywords-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.keywords-original,
+.keywords-fake {
+    padding: 20px;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+
+.keywords-original {
+    border-left: 4px solid #4CAF50;
+}
+
+.keywords-fake {
+    border-left: 4px solid #FF9800;
+}
+
+.keyword-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.keyword-inputs input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.keyword-inputs input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+}
+
+/* ==================== 绘画库样式 ==================== */
+
+.drawings-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 30px 0;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+}
+
+.drawing-item {
+    border: 3px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.drawing-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.drawing-number {
+    padding: 10px;
+    text-align: center;
+    font-weight: 600;
+    color: #333;
+    background: white;
+}
+
+.drawing-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.drawing-item.selected {
+    border-color: #4CAF50;
+    border-width: 4px;
+    background: #e8f5e9;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.drawing-item.selected .drawing-number {
+    background: #4CAF50;
+    color: white;
+}
+
+/* ==================== 游戏分析（结果页面） ==================== */
+
+.game-analysis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.drawer-info,
+.scoring-scenario {
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.drawer-info p,
+.scoring-scenario p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.drawer-info h3,
+.scoring-scenario p {
+    color: #333;
+    font-size: 16px;
+}
+
+.drawer-info h3 {
+    margin-top: 5px;
+}
