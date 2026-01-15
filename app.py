@@ -634,9 +634,12 @@ def create_game():
     if not player_name:
         return jsonify({'success': False, 'error': 'Player name is required'})
     
-    game_id = str(uuid.uuid4())[:8]
+    game_id = str(uuid.uuid4())[:8].upper()  # 转换为大写
     game = Game(game_id, language)
     games[game_id] = game
+    
+    print(f'Game created: {game_id}')  # 添加日志
+    print(f'Current games: {list(games.keys())}')
     
     # 添加游戏创建者为第一个玩家
     player_id = str(uuid.uuid4())[:8]
