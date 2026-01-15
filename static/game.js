@@ -1281,7 +1281,17 @@ async function submitDrawing() {
 
 async function updateGuessingPhase() {
     try {
-        console.log('updateGuessingPhase called, fetching drawings...');
+        console.log('updateGuessingPhase called');
+        
+        // ✅ 检查：如果当前玩家是出题者，显示等待页面而不是猜测页面
+        if (gameState.isDrawer) {
+            console.log('Current player is drawer, showing waiting page instead');
+            showWaitingMessage(t('waiting_for_guess') || '等待其他玩家猜测...');
+            checkGamePhaseProgress();  // 轮询等待结果阶段
+            return;
+        }
+        
+        console.log('Fetching drawings for guessing...');
         const response = await fetch(`/api/get-drawings/${gameState.gameId}?player_id=${gameState.playerId}`);
         const data = await response.json();
         
