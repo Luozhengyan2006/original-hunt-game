@@ -67,7 +67,11 @@ TRANSLATIONS = {
         'playerCountLabel': '玩家数量',
         'maxPlayersLabel': '最多10人',
         'start_game': '开始游戏',
+        'ready': '准备',
+        'cancel_ready': '取消准备',
         'waiting_for_players': '等待更多玩家加入...',
+        'waiting_all_ready': '等待所有玩家准备...',
+        'all_ready': '所有玩家已准备！游戏即将开始...',
         'player_icon': '👤',
         
         # 游戏阶段
@@ -227,7 +231,11 @@ TRANSLATIONS = {
         'playerCountLabel': 'Players',
         'maxPlayersLabel': 'Max 10',
         'start_game': 'Start Game',
+        'ready': 'Ready',
+        'cancel_ready': 'Cancel',
         'waiting_for_players': 'Waiting for more players to join...',
+        'waiting_all_ready': 'Waiting for all players to be ready...',
+        'all_ready': 'All players ready! Game starting...',
         'player_icon': '👤',
         
         # 游戏阶段
@@ -426,11 +434,24 @@ class Game:
         return False
     
     def start_game(self):
-        """开始游戏"""
-        if len(self.players) >= GAME_CONFIG['min_players']:
-            self.status = 'playing'
-            self.current_round = 1
-            self.start_new_round()
+        """开始游戏（需要所有玩家都准备好）"""
+        if len(self.players) < GAME_CONFIG['min_players']:
+            return False
+        
+        # 检查是否所有玩家都已准备
+        all_ready = all(player.get('ready', False) for player in self.players.values())
+        if not all_ready:
+            return False
+        
+        self.status = 'playing'
+        self.current_round = 1
+        self.start_new_round()
+        return True
+    
+    def set_player_ready(self, player_id, ready=True):
+        """设置玩家准备状态"""
+        if player_id in self.players:
+            self.players[player_id]['ready'] = ready
             return True
         return False
     
@@ -636,8 +657,11 @@ def create_game():
 def join_game():
     """加入游戏"""
     data = request.json
-    game_id = data.get('game_id')
+    game_id = data.get('game_id', '').strip().upper()  # 转换为大写并移除空格
     player_name = data.get('player_name', '').strip()  # 移除首尾空格
+    
+    print(f'Join game request: game_id={game_id}, player_name={player_name}')
+    print(f'Available games: {list(games.keys())}')
     
     if not game_id:
         return jsonify({'success': False, 'error': 'Game ID is required'})
@@ -646,7 +670,7 @@ def join_game():
         return jsonify({'success': False, 'error': 'Player name is required'})
     
     if game_id not in games:
-        return jsonify({'success': False, 'error': 'Game not found'})
+        return jsonify({'success': False, 'error': f'Game not found. Available: {list(games.keys())}'})
     
     game = games[game_id]
     player_id = str(uuid.uuid4())[:8]
@@ -697,9 +721,38 @@ def change_language():
     
     return jsonify({'success': True, 'game': game.to_dict(player_id)})
 
+@app.route('/api/player-ready', methods=['POST'])
+def player_ready():
+    """设置玩家准备状态"""
+    data = request.json
+    game_id = data.get('game_id')
+    player_id = data.get('player_id')
+    ready = data.get('ready', True)
+    
+    if game_id not in games:
+        return jsonify({'success': False, 'error': 'Game not found'})
+    
+    game = games[game_id]
+    
+    if player_id not in game.players:
+        return jsonify({'success': False, 'error': 'Player not in this game'}), 403
+    
+    game.set_player_ready(player_id, ready)
+    
+    # 检查是否所有人都准备好了，如果是则自动开始游戏
+    if game.status == 'waiting' and len(game.players) >= GAME_CONFIG['min_players']:
+        all_ready = all(p.get('ready', False) for p in game.players.values())
+        if all_ready:
+            game.start_game()
+    
+    return jsonify({
+        'success': True,
+        'game': game.to_dict(player_id)
+    })
+
 @app.route('/api/start-game', methods=['POST'])
 def start_game():
-    """开始游戏 (需要权限验证)"""
+    """开始游戏 (需要所有玩家准备)"""
     data = request.json
     game_id = data.get('game_id')
     player_id = data.get('player_id')
@@ -723,7 +776,7 @@ def start_game():
             'game': game.to_dict(player_id)
         })
     
-    return jsonify({'success': False, 'error': 'Not enough players'})
+    return jsonify({'success': False, 'error': 'Not all players ready'})
 
 @app.route('/api/get-game/<game_id>', methods=['GET'])
 def get_game(game_id):

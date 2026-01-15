@@ -465,7 +465,7 @@ async function createGame() {
 }
 
 async function joinGame() {
-    const gameId = document.getElementById('gameCode').value.trim();
+    const gameId = document.getElementById('gameCode').value.trim().toUpperCase();  // 转大写
     const playerName = document.getElementById('joinPlayerName').value.trim();
     
     console.log('joinGame called with:', { gameId, playerName });
@@ -577,10 +577,12 @@ async function updateLobby() {
             if (playersList) {
                 playersList.innerHTML = '';
                 
-                Object.values(gameState.gameData.players).forEach(player => {
+                Object.entries(gameState.gameData.players).forEach(([playerId, player]) => {
                     const div = document.createElement('div');
                     div.className = 'player-item';
-                    div.textContent = `👤 ${player.name}`;
+                    const readyIcon = player.ready ? '✅' : '⏳';
+                    const isYou = playerId === gameState.playerId ? ' (你)' : '';
+                    div.innerHTML = `👤 ${player.name}${isYou} ${readyIcon}`;
                     playersList.appendChild(div);
                 });
             }
@@ -591,17 +593,31 @@ async function updateLobby() {
                 playerCountEl.textContent = Object.keys(gameState.gameData.players).length;
             }
             
-            // 更新开始按钮状态
-            const startBtn = document.getElementById('startBtn');
-            if (startBtn) {
-                const playerCount = Object.keys(gameState.gameData.players).length;
-                const minPlayers = 2;  // 最少2个玩家
-                if (playerCount >= minPlayers) {
-                    startBtn.disabled = false;
-                    startBtn.style.opacity = '1';
+            // 更新准备状态提示
+            const readyStatus = document.getElementById('readyStatus');
+            const readyCount = Object.values(gameState.gameData.players).filter(p => p.ready).length;
+            const totalCount = Object.keys(gameState.gameData.players).length;
+            if (readyStatus) {
+                if (readyCount === totalCount && totalCount >= 2) {
+                    readyStatus.textContent = '所有玩家已准备！游戏即将开始...';
+                    readyStatus.style.color = '#28a745';
                 } else {
-                    startBtn.disabled = true;
-                    startBtn.style.opacity = '0.5';
+                    readyStatus.textContent = `${readyCount}/${totalCount} 玩家已准备`;
+                    readyStatus.style.color = '#666';
+                }
+            }
+            
+            // 更新准备按钮状态
+            const readyBtn = document.getElementById('readyBtn');
+            const readyBtnText = document.getElementById('readyBtnText');
+            if (readyBtn && readyBtnText && gameState.gameData.players[gameState.playerId]) {
+                const isReady = gameState.gameData.players[gameState.playerId].ready;
+                if (isReady) {
+                    readyBtn.className = 'btn btn-warning';
+                    readyBtnText.textContent = '取消准备';
+                } else {
+                    readyBtn.className = 'btn btn-primary';
+                    readyBtnText.textContent = '准备';
                 }
             }
             
@@ -644,6 +660,47 @@ function leaveLobby() {
     gameState.gameId = null;
     gameState.playerId = null;
     backToWelcome();
+}
+
+async function toggleReady() {
+    if (!gameState.gameId || !gameState.playerId) {
+        console.error('Missing gameId or playerId');
+        return;
+    }
+    
+    const currentReady = gameState.gameData?.players?.[gameState.playerId]?.ready || false;
+    const newReady = !currentReady;
+    
+    try {
+        const response = await fetch('/api/player-ready', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                game_id: gameState.gameId,
+                player_id: gameState.playerId,
+                ready: newReady
+            })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            gameState.gameData = data.game;
+            
+            // 检查游戏是否已开始（所有人都准备好）
+            if (data.game.status === 'playing') {
+                console.log('All players ready! Game starting...');
+                gameState.gameStarted = true;
+                clearInterval(lobbyUpdateInterval);
+                lobbyUpdateInterval = null;
+                startGameRound();
+            } else {
+                // 更新大厅显示
+                updateLobby();
+            }
+        }
+    } catch (error) {
+        console.error('Error toggling ready:', error);
+    }
 }
 
 async function startGame() {
