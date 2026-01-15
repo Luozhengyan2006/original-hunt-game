@@ -912,17 +912,22 @@ def next_round():
         return jsonify({
             'success': True,
             'ignored': True,
+            'message': 'Not in result phase',
             'game': game.to_dict(player_id)
         })
 
+    # 增加轮数并开始新一轮（任何玩家都可以触发）
     game.current_round += 1
+    print(f'[Next Round] Moving to round {game.current_round}')
     
     if game.start_new_round():
+        print(f'[Next Round] Started round {game.current_round}, phase: {game.game_phase}')
         return jsonify({
             'success': True,
             'game': game.to_dict(player_id)
         })
     else:
+        print(f'[Next Round] Game over after {game.current_round - 1} rounds')
         return jsonify({
             'success': True,
             'game_over': True,

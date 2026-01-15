@@ -1563,7 +1563,16 @@ function updateResultPage(scoreData) {
 }
 
 async function nextRound() {
+    // 防止重复点击
+    const nextBtn = document.getElementById('nextRoundBtn');
+    if (nextBtn) {
+        nextBtn.disabled = true;
+        nextBtn.textContent = t('loading') || '加载中...';
+    }
+    
     try {
+        console.log('Requesting next round...');
+        
         const response = await fetch('/api/next-round', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1574,18 +1583,56 @@ async function nextRound() {
         });
         
         const data = await response.json();
+        console.log('Next round response:', data);
+        
         if (data.success) {
-            gameState.gameData = data.game;
-            gameState.selectedDrawingIndex = null;
-            
-            if (data.game_over) {
-                showGameOverPage();
+            if (data.ignored) {
+                // 已经有其他玩家推进了游戏
+                console.log('Round already advanced by another player');
+                // 重新获取游戏状态
+                const gameResp = await fetch(`/api/get-game/${gameState.gameId}?player_id=${gameState.playerId}`);
+                const gameData = await gameResp.json();
+                if (gameData.success) {
+                    gameState.gameData = gameData.game;
+                    gameState.gamePhase = gameData.game.game_phase;
+                    gameState.isDrawer = gameData.game.current_drawer === gameState.playerId;
+                    // 根据当前阶段显示对应页面
+                    if (gameData.game.game_phase === 'keywords_modified') {
+                        if (gameState.isDrawer) {
+                            showModifyKeywords();
+                        } else {
+                            showWaitingForDrawer();
+                        }
+                    }
+                }
             } else {
-                startGameRound();
+                gameState.gameData = data.game;
+                gameState.gamePhase = data.game.game_phase;
+                gameState.isDrawer = data.game.current_drawer === gameState.playerId;
+                gameState.selectedDrawingIndex = null;
+                
+                if (data.game_over) {
+                    console.log('Game over, showing final results');
+                    showGameOverPage();
+                } else {
+                    console.log('Starting new round:', data.game.current_round);
+                    startGameRound();
+                }
+            }
+        } else {
+            alert('进入下一轮失败: ' + (data.error || '未知错误'));
+            if (nextBtn) {
+                nextBtn.disabled = false;
+                nextBtn.textContent = t('next_round') || '下一轮';
             }
         }
     } catch (error) {
         console.error('Error loading next round:', error);
+        alert('进入下一轮失败，请刷新页面重试');
+        if (nextBtn) {
+            nextBtn.disabled = false;
+            nextBtn.textContent = t('next_round') || '下一轮';
+        }
     }
 }
 
