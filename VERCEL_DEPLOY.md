@@ -1,6 +1,39 @@
 # Vercel部署指南
 
-## 部署步骤
+## 方法一：通过Vercel网页部署（推荐）
+
+### 步骤：
+
+1. **访问Vercel官网**
+   - 打开 https://vercel.com
+   - 使用GitHub账号登录
+
+2. **导入项目**
+   - 点击 "Add New..." → "Project"
+   - 选择你的GitHub仓库：`Luozhengyan2006/original-hunt-game`
+   - 选择 `game` 目录作为根目录
+
+3. **配置项目**
+   - Framework Preset: 选择 "Other"
+   - Root Directory: 设置为 `game`
+   - Build Command: 留空
+   - Output Directory: 留空
+   - Install Command: `pip install -r requirements.txt`
+
+4. **环境变量（可选）**
+   - 如需配置密钥等，在Environment Variables中添加
+
+5. **部署**
+   - 点击 "Deploy" 按钮
+   - 等待部署完成（约1-2分钟）
+   - 获取部署URL（如：https://your-project.vercel.app）
+
+## 方法二：通过Vercel CLI部署
+
+### 前置要求：
+- 安装Node.js和npm（从 https://nodejs.org 下载）
+
+### 步骤：
 
 1. **安装Vercel CLI**
    ```bash
@@ -12,8 +45,9 @@
    vercel login
    ```
 
-3. **部署到Vercel**
+3. **首次部署（测试环境）**
    ```bash
+   cd c:\Users\97746\OneDrive\Desktop\git\game
    vercel
    ```
 
