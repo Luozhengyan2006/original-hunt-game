@@ -45,14 +45,6 @@
                         <input type="text" id="creatorName" placeholder="输入您的名字">
                     </div>
 
-                    <div class="form-group">
-                        <label id="languageLabel">游戏语言</label>
-                        <select id="gameLanguage">
-                            <option value="zh">中文 (Chinese)</option>
-                            <option value="en">英文 (English)</option>
-                        </select>
-                    </div>
-
                     <div class="button-group">
                         <button class="btn btn-success" onclick="createGame()">
                             <span id="startGameBtn">开始游戏</span>
@@ -95,6 +87,7 @@
                 <div class="lobby">
                     <h2 id="lobbyTitle">游戏大厅</h2>
                     <p id="gameCodeDisplay">游戏代码: <strong id="codeText">-</strong></p>
+                    <p id="playerCountDisplay">玩家数量: <span id="playerCount">0</span> / 最多4人</p>
                     
                     <div class="players-list">
                         <h3 id="playersLabel">玩家列表</h3>
@@ -114,7 +107,25 @@
                 </div>
             </div>
 
-            <!-- 页面5: 修改关键词阶段 (仅绘图者) -->
+            <!-- 页面5: 等待绘图者准备 (其他玩家) -->
+            <div id="page-waiting-drawer" class="page">
+                <div class="game-container">
+                    <div class="waiting-screen">
+                        <h2 id="waitingTitle">等待绘图者准备...</h2>
+                        <p id="waitingMessage">绘图者正在修改关键词，请稍候</p>
+                        <div class="spinner"></div>
+                        <p id="drawerNameWaiting" class="drawer-name">-</p>
+
+                        <div class="button-group">
+                            <button class="btn btn-secondary" onclick="leaveLobby()" id="leaveWaitingBtn">
+                                <span id="leaveWaitingBtnText">离开</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面6: 修改关键词阶段 (仅绘图者) -->
             <div id="page-modify-keywords" class="page">
                 <div class="game-container">
                     <div class="game-header">
@@ -150,7 +161,7 @@
                 </div>
             </div>
 
-            <!-- 页面6: 所有玩家绘画阶段 -->
+            <!-- 页面7: 所有玩家绘画阶段 -->
             <div id="page-all-drawing" class="page">
                 <div class="game-container">
                     <div class="game-header">
@@ -186,7 +197,17 @@
                 </div>
             </div>
 
-            <!-- 页面7: 游戏进行中 - 猜测阶段 (识别绘图者) -->
+            <!-- 页面6.5: 等待页面 -->
+            <div id="page-waiting-page" class="page">
+                <div class="waiting-container">
+                    <div class="waiting-content">
+                        <div class="waiting-icon">⏳</div>
+                        <div id="waitingText">加载中...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面8: 游戏进行中 - 猜测阶段 (识别绘图者) -->
             <div id="page-guessing" class="page">
                 <div class="game-container">
                     <div class="game-header">
@@ -208,7 +229,7 @@
                 </div>
             </div>
 
-            <!-- 页面8: 结果 -->
+            <!-- 页面9: 结果 -->
             <div id="page-result" class="page">
                 <div class="game-container">
                     <div class="result">
@@ -245,7 +266,7 @@
                 </div>
             </div>
 
-            <!-- 页面9: 游戏结束 -->
+            <!-- 页面10: 游戏结束 -->
             <div id="page-gameover" class="page">
                 <div class="game-container">
                     <div class="result">

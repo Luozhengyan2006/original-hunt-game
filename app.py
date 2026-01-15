@@ -20,7 +20,7 @@ CORS(app)
 # 游戏配置
 GAME_CONFIG = {
     'max_players': 10,
-    'min_players': 4,
+    'min_players': 2,
     'rounds': 5,
     'time_per_round': 120,  # 秒
 }
@@ -34,54 +34,323 @@ LANGUAGES = {
 # 翻译文本
 TRANSLATIONS = {
     'zh': {
-        'game_name': '扭曲画猜',
-        'setup': '设置游戏',
-        'num_players': '玩家人数',
-        'player_name': '玩家名称',
-        'language': '选择语言',
+        # 页面标题和基础UI
+        'game_title': '🎨 扭曲画猜',
+        'language_switch': '🌐 English',
+        
+        # 欢迎页
+        'welcome': '欢迎来到扭曲画猜！',
+        'create_new_game': '创建新游戏',
+        'join_existing_game': '加入游戏',
+        'creator_name': '您的名字',
+        'game_language': '游戏语言',
+        'chinese': '中文',
+        'english': 'English',
+        'create_game': '创建游戏',
+        
+        # 加入游戏
+        'game_code': '游戏代码',
+        'join_player_name': '您的名字',
+        'join_game': '加入游戏',
+        'please_enter_name': '请输入您的名字',
+        'please_enter_code_and_name': '请输入游戏代码和名字',
+        'join_failed': '加入失败',
+        'join_game_failed': '加入游戏失败',
+        'create_game_failed': '创建游戏失败',
+        'start_game_failed': '启动游戏失败',
+        
+        # 大厅页
+        'lobby': '游戏大厅',
+        'game_code_label': '游戏代码：',
+        'players': '玩家列表：',
+        'player_count': '玩家数：',
         'start_game': '开始游戏',
-        'drawing_phase': '绘画阶段',
-        'draw_your_keywords': '请绘制您的关键词',
-        'time_left': '剩余时间',
-        'guessing_phase': '猜测阶段',
-        'guess': '猜测',
-        'submit_guess': '提交猜测',
-        'result': '结果',
-        'correct': '正确！',
-        'wrong': '错误',
-        'next_round': '下一轮',
-        'game_over': '游戏结束',
-        'total_score': '总分',
-        'thanks_for_playing': '感谢游玩！',
-        'play_again': '再玩一次',
+        'waiting_for_players': '等待更多玩家加入...',
+        'player_icon': '👤',
+        
+        # 游戏阶段
+        'drawer_drawing': '出题者绘画阶段',
+        'keywords_modified': '修改关键词阶段',
+        'other_drawing': '其他玩家绘画阶段',
+        'guessing': '猜测阶段',
+        'result': '结果阶段',
+        'gameover': '游戏结束',
+        
+        # 绘画相关
+        'current_round': '当前轮数：',
+        'keywords': '关键词',
+        'original_keywords': '原始关键词',
+        'submit_drawing': '提交绘画',
+        'submitting': '提交中...',
+        'drawing_canvas': '请在下面绘制内容',
         'clear_canvas': '清除画布',
-        'download_image': '下载图片',
+        'undo': '撤销',
+        'submit_failed': '提交失败',
+        'canvas_not_found': 'Canvas 元素未找到',
+        'canvas_error': '无法转换画布为图片',
+        'http_error': 'HTTP 错误',
+        'invalid_response': '服务器响应无效',
+        'server_error': '服务器错误',
+        'network_error': '网络错误',
+        'unknown_error': '未知错误',
+        'submitting_drawing': '正在提交绘画...',
+        'waiting_for_others': '等待其他玩家完成...',
+        'waiting_for_drawer': '等待出题者绘画...',
+        'waiting_for_drawing': '等待其他玩家加入绘画...',
+        'waiting_for_guess': '等待其他玩家完成猜测...',
+        'waiting_to_modify_keywords': '等待出题者修改关键词...',
+        'timeout_submitted': '时间已到，等待其他玩家...',
+        'missing_game_or_player_id': '游戏ID或玩家ID缺失',
+        'failed_to_start_game': '启动游戏失败',
+        'failed_submit_keywords': '提交修改关键词失败',
+        'drawing_timeout_text': '画',
+        
+        # 修改关键词
+        'modify_keywords': '修改关键词',
+        'original_keywords_label': '原始关键词：',
+        'modified_keywords_label': '修改后的关键词：',
+        'submit_keywords': '提交修改',
+        'submit_keywords_failed': '提交修改关键词失败',
+        'modify_failed': '修改失败',
+        
+        # 猜测
+        'guess_question': '请选择一幅画',
+        'select_drawing': '请选择一幅画',
+        'submit_guess': '提交猜测',
+        'drawings_gallery': '绘画库',
+        
+        # 结果
+        'round_result': '本轮结果',
+        'drawer': '出题者：',
+        'round_scores': '本轮分数',
+        'total_scores': '总分排行',
+        'scenario': '场景说明',
+        'next_round': '下一轮',
+        'game_finished': '游戏结束',
+        'final_winner': '最终胜者：',
+        'final_scores': '最终排名',
+        'play_again': '再玩一次',
+        'loading': '加载中...',
+        'loading_next_step': '已提交，正在加载下一步...',
+        'points': '分',
+        'score_for_round': '+',
+        'back_to_home': '返回首页',
+        
+        # HTML 页面文本
+        'welcomeTitle': '欢迎来到扭曲画猜',
+        'welcomeDesc': '一个创意绘画和猜测游戏',
+        'createTitle': '创建新游戏',
+        'joinTitle': '加入游戏',
+        'lobbyTitle': '游戏大厅',
+        'gameCodeDisplay': '游戏代码:',
+        'playersLabel': '玩家列表',
+        'modifyKeywordsTitle': '修改关键词',
+        'roundInfo': '轮',
+        'roundInfo2': '轮',
+        'roundInfo3': '轮',
+        'modifyInstructions': '您是绘图者！可以修改以下关键词来迷惑其他玩家：',
+        'originalKeywordsLabel': '原始关键词:',
+        'fakeKeywordsLabel': '修改为这些假关键词 (可选):',
+        'allDrawingTitle': '绘画阶段',
+        'drawKeywordsLabel': '请绘制以下关键词之一:',
+        'timeLabel': '剩余时间:',
+        'guessingTitle': '识别阶段',
+        'guessingInstructions': '看这些画，猜猜哪个是绘图者画的？',
+        'resultTitle': '本轮结果',
+        'drawerLabel': '绘图者:',
+        'scenarioLabel': '计分情景:',
+        'scoresLabel': '本轮分数',
+        'totalScoresLabel': '总分排名',
+        'gameOverTitle': '游戏结束',
+        'winnerLabel': '🏆 获胜者',
+        'finalScoresLabel': '最终排名',
+        'createGameBtn': '创建新游戏',
+        'joinGameBtn': '加入游戏',
+        'playerNameLabel': '您的名字',
+        'languageLabel': '游戏语言',
+        'startGameBtn': '开始游戏',
+        'backBtn': '返回',
+        'gameCodeLabel': '游戏代码',
+        'playerNameLabel2': '您的名字',
+        'joinGameBtnText': '加入游戏',
+        'codeText': '-',
+        'startBtn': '开始游戏',
+        'leaveBtn': '离开',
+        'submitKeywordsBtn': '确认并继续',
+        'submitDrawingBtn': '提交绘画',
+        'clearBtn': '清除画布',
+        'undoBtn': '撤销',
+        'submitGuessBtn': '提交猜测',
+        'nextRoundBtn': '下一轮',
+        'playAgainBtn': '再玩一次',
+        'backToHomeBtn': '返回首页',
+        'creatorName': '您的名字',
+        'placeholder_name': '输入您的名字',
+        'placeholder_code': '输入游戏代码',
+        'placeholder_keyword1': '关键词1 (可选修改)',
+        'placeholder_keyword2': '关键词2 (可选修改)',
+        'placeholder_keyword3': '关键词3 (可选修改)',
     },
     'en': {
-        'game_name': 'Twist Draw Guess',
-        'setup': 'Setup Game',
-        'num_players': 'Number of Players',
-        'player_name': 'Player Name',
-        'language': 'Select Language',
+        # 页面标题和基础UI
+        'game_title': '🎨 Twist Draw Guess',
+        'language_switch': '🌐 中文',
+        
+        # 欢迎页
+        'welcome': 'Welcome to Twist Draw Guess!',
+        'create_new_game': 'Create New Game',
+        'join_existing_game': 'Join Game',
+        'creator_name': 'Your Name',
+        'game_language': 'Game Language',
+        'chinese': '中文',
+        'english': 'English',
+        'create_game': 'Create Game',
+        
+        # 加入游戏
+        'game_code': 'Game Code',
+        'join_player_name': 'Your Name',
+        'join_game': 'Join Game',
+        'please_enter_name': 'Please enter your name',
+        'please_enter_code_and_name': 'Please enter game code and name',
+        'join_failed': 'Join failed',
+        'join_game_failed': 'Failed to join game',
+        'create_game_failed': 'Failed to create game',
+        'start_game_failed': 'Failed to start game',
+        
+        # 大厅页
+        'lobby': 'Game Lobby',
+        'game_code_label': 'Game Code: ',
+        'players': 'Players: ',
+        'player_count': 'Number of Players: ',
         'start_game': 'Start Game',
-        'drawing_phase': 'Drawing Phase',
-        'draw_your_keywords': 'Draw your keywords',
-        'time_left': 'Time Left',
-        'guessing_phase': 'Guessing Phase',
-        'guess': 'Guess',
-        'submit_guess': 'Submit Guess',
-        'result': 'Result',
-        'correct': 'Correct!',
-        'wrong': 'Wrong',
-        'next_round': 'Next Round',
-        'game_over': 'Game Over',
-        'total_score': 'Total Score',
-        'thanks_for_playing': 'Thanks for playing!',
-        'play_again': 'Play Again',
+        'waiting_for_players': 'Waiting for more players to join...',
+        'player_icon': '👤',
+        
+        # 游戏阶段
+        'drawer_drawing': 'Drawer Drawing Phase',
+        'keywords_modified': 'Keywords Modified Phase',
+        'other_drawing': 'Other Players Drawing Phase',
+        'guessing': 'Guessing Phase',
+        'result': 'Result Phase',
+        'gameover': 'Game Over',
+        
+        # 绘画相关
+        'current_round': 'Current Round: ',
+        'keywords': 'Keywords',
+        'original_keywords': 'Original Keywords',
+        'submit_drawing': 'Submit Drawing',
+        'submitting': 'Submitting...',
+        'drawing_canvas': 'Draw below',
         'clear_canvas': 'Clear Canvas',
-        'download_image': 'Download Image',
+        'undo': 'Undo',
+        'submit_failed': 'Submit failed',
+        'canvas_not_found': 'Canvas element not found',
+        'canvas_error': 'Failed to convert canvas to image',
+        'http_error': 'HTTP Error',
+        'invalid_response': 'Invalid response from server',
+        'server_error': 'Server error',
+        'network_error': 'Network error',
+        'unknown_error': 'Unknown error',
+        'submitting_drawing': 'Submitting drawing...',
+        'waiting_for_others': 'Waiting for other players...',
+        'waiting_for_drawer': 'Waiting for drawer...',
+        'waiting_for_drawing': 'Waiting for players to draw...',
+        'waiting_for_guess': 'Waiting for players to guess...',
+        'waiting_to_modify_keywords': 'Waiting for drawer to modify keywords...',
+        'timeout_submitted': 'Time expired, waiting for others...',
+        'missing_game_or_player_id': 'Missing gameId or playerId',
+        'failed_to_start_game': 'Failed to start game',
+        'failed_submit_keywords': 'Failed to submit modified keywords',
+        'drawing_timeout_text': 'Drawing',
+        
+        # 修改关键词
+        'modify_keywords': 'Modify Keywords',
+        'original_keywords_label': 'Original Keywords: ',
+        'modified_keywords_label': 'Modified Keywords: ',
+        'submit_keywords': 'Submit Changes',
+        'submit_keywords_failed': 'Failed to submit keywords',
+        'modify_failed': 'Modification failed',
+        
+        # 猜测
+        'guess_question': 'Please select a drawing',
+        'select_drawing': 'Please select a drawing',
+        'submit_guess': 'Submit Guess',
+        'drawings_gallery': 'Drawings Gallery',
+        
+        # 结果
+        'round_result': 'Round Result',
+        'drawer': 'Drawer: ',
+        'round_scores': 'Round Scores',
+        'total_scores': 'Total Scores',
+        'scenario': 'Scenario Description',
+        'next_round': 'Next Round',
+        'game_finished': 'Game Finished',
+        'final_winner': 'Final Winner: ',
+        'final_scores': 'Final Rankings',
+        'play_again': 'Play Again',
+        'loading': 'Loading...',
+        'loading_next_step': 'Submitted, loading next step...',
+        'points': 'points',
+        'score_for_round': '+',
+        'back_to_home': 'Back to Home',
+        
+        # HTML 页面文本
+        'welcomeTitle': 'Welcome to Twist Draw Guess',
+        'welcomeDesc': 'A creative drawing and guessing game',
+        'createTitle': 'Create New Game',
+        'joinTitle': 'Join Game',
+        'lobbyTitle': 'Game Lobby',
+        'gameCodeDisplay': 'Game Code:',
+        'playersLabel': 'Players List',
+        'modifyKeywordsTitle': 'Modify Keywords',
+        'roundInfo': 'Round',
+        'roundInfo2': 'Round',
+        'roundInfo3': 'Round',
+        'modifyInstructions': 'You are the drawer! You can modify the keywords below to confuse other players:',
+        'originalKeywordsLabel': 'Original Keywords:',
+        'fakeKeywordsLabel': 'Modify to these fake keywords (optional):',
+        'allDrawingTitle': 'Drawing Phase',
+        'drawKeywordsLabel': 'Please draw one of the keywords below:',
+        'timeLabel': 'Time Remaining:',
+        'guessingTitle': 'Guessing Phase',
+        'guessingInstructions': 'Look at these drawings, can you guess which one is drawn by the drawer?',
+        'resultTitle': 'Round Result',
+        'drawerLabel': 'Drawer:',
+        'scenarioLabel': 'Scoring Scenario:',
+        'scoresLabel': 'Round Scores',
+        'totalScoresLabel': 'Total Score Rankings',
+        'gameOverTitle': 'Game Over',
+        'winnerLabel': '🏆 Winner',
+        'finalScoresLabel': 'Final Rankings',
+        'createGameBtn': 'Create New Game',
+        'joinGameBtn': 'Join Game',
+        'playerNameLabel': 'Your Name',
+        'languageLabel': 'Game Language',
+        'startGameBtn': 'Start Game',
+        'backBtn': 'Back',
+        'gameCodeLabel': 'Game Code',
+        'playerNameLabel2': 'Your Name',
+        'joinGameBtnText': 'Join Game',
+        'codeText': '-',
+        'startBtn': 'Start Game',
+        'leaveBtn': 'Leave',
+        'submitKeywordsBtn': 'Confirm and Continue',
+        'submitDrawingBtn': 'Submit Drawing',
+        'clearBtn': 'Clear Canvas',
+        'undoBtn': 'Undo',
+        'submitGuessBtn': 'Submit Guess',
+        'nextRoundBtn': 'Next Round',
+        'playAgainBtn': 'Play Again',
+        'backToHomeBtn': 'Back to Home',
+        'creatorName': 'Your Name',
+        'placeholder_name': 'Enter your name',
+        'placeholder_code': 'Enter game code',
+        'placeholder_keyword1': 'Keyword 1 (optional to modify)',
+        'placeholder_keyword2': 'Keyword 2 (optional to modify)',
+        'placeholder_keyword3': 'Keyword 3 (optional to modify)',
     }
 }
+
 
 # ==================== 关键词库 ====================
 
@@ -129,13 +398,14 @@ class Game:
         # 游戏状态
         self.current_drawer = None
         self.original_keywords = []        # 真实关键词 (出题者看到)
-        self.fake_keywords = []            # 虚假关键词 (其他玩家看到)
+        self.modified_keywords = []        # 修改后的关键词 (其他玩家看到)
         self.drawings = {}                 # 玩家ID → 绘画数据
-        self.guesses = {}                  # 玩家ID → 猜测的是哪个绘画 (索引)
+        self.guesses = {}                  # 玩家ID → 猜测的是哪个绘画ID
         self.scores = {}                   # 玩家ID → 累计分数
         self.round_scores = {}             # 本轮各玩家的分数
         
-        self.game_phase = 'keywords'       # 游戏阶段: keywords, modify, drawing, guessing, result
+        # 游戏阶段: drawer_drawing, keywords_modified, other_drawing, guessing, result
+        self.game_phase = 'drawer_drawing'
         self.created_at = datetime.now()
         self.last_activity = datetime.now()
     
@@ -167,16 +437,17 @@ class Game:
             return False
         
         # 选择出题者 (轮流)
+        # current_round 从 1 开始，因此这里要用 (current_round - 1) 做偏移
         player_ids = list(self.players.keys())
-        self.current_drawer = player_ids[self.current_round % len(player_ids)]
+        self.current_drawer = player_ids[(self.current_round - 1) % len(player_ids)]
         
         # 生成真实关键词
         self.original_keywords = random.sample(self.keywords, 3)
-        self.fake_keywords = []        # 还未修改
-        self.drawings = {}             # 清空绘画
-        self.guesses = {}              # 清空猜测
-        self.round_scores = {}         # 清空本轮分数
-        self.game_phase = 'keywords'   # 开始关键词阶段
+        self.modified_keywords = []        # 还未修改
+        self.drawings = {}                 # 清空绘画
+        self.guesses = {}                  # 清空猜测
+        self.round_scores = {}             # 清空本轮分数
+        self.game_phase = 'keywords_modified' # 开始关键词修改阶段（出题者修改关键词）
         
         return True
     
@@ -185,13 +456,37 @@ class Game:
         self.fake_keywords = fake_keywords
         self.game_phase = 'drawing'
     
+    def submit_modified_keywords(self, modified_keywords):
+        """出题者提交修改后的关键词
+        
+        Args:
+            modified_keywords: 出题者修改后的关键词列表
+        """
+        self.modified_keywords = modified_keywords
+        self.game_phase = 'other_drawing'
+    
     def submit_drawing(self, player_id, drawing_data):
         """收集绘画"""
         self.drawings[player_id] = drawing_data
+        print(f'Player {player_id} submitted drawing. Current drawings: {len(self.drawings)}/{len(self.players)}')
+        
+        # 检查是否所有玩家都已提交绘画
+        if len(self.drawings) == len(self.players):
+            # 所有人都提交了画，进入猜测阶段
+            self.game_phase = 'guessing'
+            print(f'All players submitted! Game phase changed to: {self.game_phase}')
     
     def submit_guess(self, player_id, guess_drawer_id):
         """提交猜测: 猜测哪个绘画是出题者的"""
         self.guesses[player_id] = guess_drawer_id
+        print(f'Player {player_id} submitted guess. Current guesses: {len(self.guesses)}/{len(self.players) - 1}')
+        
+        # 检查是否所有非绘图者都已提交猜测
+        if len(self.guesses) == (len(self.players) - 1):
+            # 所有人都提交了猜测，计算分数并进入结果阶段
+            self.calculate_scores()
+            self.game_phase = 'result'
+            print(f'All players submitted guesses! Game phase changed to: {self.game_phase}')
     
     def calculate_scores(self):
         """计算本轮分数 (完整规则)"""
@@ -255,11 +550,17 @@ class Game:
         
         Args:
             player_id: 请求玩家的ID，用于权限控制
-                      如果是绘图者，返回真实关键词
-                      否则返回假关键词
+                      - 出题者看到 original_keywords
+                      - 其他玩家看到 modified_keywords
         """
         # 判断是否是绘图者
         is_drawer = (player_id == self.current_drawer)
+        
+        # 根据玩家身份返回不同的关键词
+        if is_drawer:
+            display_keywords = self.original_keywords
+        else:
+            display_keywords = self.modified_keywords if self.modified_keywords else self.original_keywords
         
         return {
             'id': self.id,
@@ -268,8 +569,9 @@ class Game:
             'current_round': self.current_round,
             'status': self.status,
             'current_drawer': self.current_drawer,
-            'original_keywords': self.original_keywords if is_drawer else self.fake_keywords,
-            'fake_keywords': self.fake_keywords,
+            'original_keywords': self.original_keywords if is_drawer else [],  # 只有绘图者看到真实关键词
+            'modified_keywords': self.modified_keywords,
+            'display_keywords': display_keywords,  # 根据权限显示的关键词
             'drawings': self.drawings,
             'guesses': self.guesses,
             'scores': self.scores,
@@ -289,15 +591,29 @@ def index():
 def create_game():
     """创建游戏"""
     data = request.json
+    player_name = data.get('player_name', '').strip()  # 移除首尾空格
     language = data.get('language', 'zh')
+    
+    # 验证玩家名字不为空
+    if not player_name:
+        return jsonify({'success': False, 'error': 'Player name is required'})
     
     game_id = str(uuid.uuid4())[:8]
     game = Game(game_id, language)
     games[game_id] = game
     
+    # 添加游戏创建者为第一个玩家
+    player_id = str(uuid.uuid4())[:8]
+    game.add_player(player_id, player_name)
+    
+    # 保存到session
+    session['player_id'] = player_id
+    session['game_id'] = game_id
+    
     return jsonify({
         'success': True,
         'game_id': game_id,
+        'player_id': player_id,
         'language': language
     })
 
@@ -306,7 +622,13 @@ def join_game():
     """加入游戏"""
     data = request.json
     game_id = data.get('game_id')
-    player_name = data.get('player_name')
+    player_name = data.get('player_name', '').strip()  # 移除首尾空格
+    
+    if not game_id:
+        return jsonify({'success': False, 'error': 'Game ID is required'})
+    
+    if not player_name:
+        return jsonify({'success': False, 'error': 'Player name is required'})
     
     if game_id not in games:
         return jsonify({'success': False, 'error': 'Game not found'})
@@ -327,21 +649,53 @@ def join_game():
     
     return jsonify({'success': False, 'error': 'Game is full'})
 
-@app.route('/api/start-game', methods=['POST'])
-def start_game():
-    """开始游戏 (需要权限验证)"""
+@app.route('/api/change-language', methods=['POST'])
+def change_language():
+    """改变游戏语言 (仅在大厅/setup状态可用)"""
     data = request.json
     game_id = data.get('game_id')
-    player_id = data.get('player_id') or session.get('player_id')
-    
-    # ✅ 身份验证：检查player_id是否匹配session
-    if session.get('player_id') != player_id:
-        return jsonify({'success': False, 'error': 'Unauthorized'}), 403
+    player_id = data.get('player_id')
+    language = data.get('language', 'zh')
     
     if game_id not in games:
         return jsonify({'success': False, 'error': 'Game not found'})
     
     game = games[game_id]
+    
+    # ✅ 验证：player_id必须存在于游戏的玩家列表中
+    if player_id not in game.players:
+        return jsonify({'success': False, 'error': 'Player not in this game'}), 403
+    
+    # 仅在大厅阶段允许改变语言
+    if game.status != 'setup':
+        return jsonify({'success': False, 'error': 'Cannot change language after game started'})
+    
+    # 改变游戏语言并重新加载关键词
+    game.language = language
+    game.keywords = load_keywords_library(language)
+    
+    return jsonify({'success': True, 'game': game.to_dict(player_id)})
+
+@app.route('/api/start-game', methods=['POST'])
+def start_game():
+    """开始游戏 (需要权限验证)"""
+    data = request.json
+    game_id = data.get('game_id')
+    player_id = data.get('player_id')
+    
+    if game_id not in games:
+        return jsonify({'success': False, 'error': 'Game not found'})
+    
+    game = games[game_id]
+    
+    # ✅ 验证：player_id必须存在于游戏的玩家列表中
+    if player_id not in game.players:
+        return jsonify({'success': False, 'error': 'Player not in this game'}), 403
+    
+    # 可选：保存session以便后续验证
+    session['player_id'] = player_id
+    session['game_id'] = game_id
+    
     if game.start_game():
         return jsonify({
             'success': True,
@@ -396,23 +750,56 @@ def get_drawings(game_id):
 
 @app.route('/api/set-fake-keywords', methods=['POST'])
 def set_fake_keywords():
-    """设置虚假关键词 (需要权限验证)"""
+    """设置虚假关键词 (已弃用，保留向后兼容)"""
     data = request.json
     game_id = data.get('game_id')
     player_id = data.get('player_id')
     fake_keywords = data.get('fake_keywords')
     
-    # ✅ 身份验证：检查player_id是否匹配session
-    if session.get('player_id') != player_id:
-        return jsonify({'success': False, 'error': 'Unauthorized'}), 403
+    if game_id not in games:
+        return jsonify({'success': False, 'error': 'Game not found'})
+    
+    game = games[game_id]
+    
+    # ✅ 验证：player_id必须存在于游戏的玩家列表中
+    if player_id not in game.players:
+        return jsonify({'success': False, 'error': 'Player not in this game'}), 403
+    
+    # 可选：保存session
+    session['player_id'] = player_id
+    session['game_id'] = game_id
+    
+    game.set_fake_keywords(fake_keywords)
+    return jsonify({'success': True})
+
+@app.route('/api/submit-modified-keywords', methods=['POST'])
+def submit_modified_keywords():
+    """出题者提交修改后的关键词 (需要权限验证)"""
+    data = request.json
+    game_id = data.get('game_id')
+    player_id = data.get('player_id')
+    modified_keywords = data.get('modified_keywords')
     
     if game_id not in games:
         return jsonify({'success': False, 'error': 'Game not found'})
     
     game = games[game_id]
-    game.set_fake_keywords(fake_keywords)
     
-    return jsonify({'success': True})
+    # ✅ 验证：player_id必须存在于游戏的玩家列表中
+    if player_id not in game.players:
+        return jsonify({'success': False, 'error': 'Player not in this game'}), 403
+    
+    # ✅ 权限检查：只有出题者才能修改关键词
+    if game.current_drawer != player_id:
+        return jsonify({'success': False, 'error': 'Only drawer can modify keywords'}), 403
+    
+    # 可选：保存session
+    session['player_id'] = player_id
+    session['game_id'] = game_id
+    
+    game.submit_modified_keywords(modified_keywords)
+    
+    return jsonify({'success': True, 'game': game.to_dict(player_id)})
 
 @app.route('/api/submit-drawing', methods=['POST'])
 def submit_drawing():
@@ -422,17 +809,25 @@ def submit_drawing():
     player_id = data.get('player_id')
     drawing_data = data.get('drawing_data')
     
-    # ✅ 身份验证：检查player_id是否匹配session
-    if session.get('player_id') != player_id:
-        return jsonify({'success': False, 'error': 'Unauthorized'}), 403
+    print(f'submit_drawing called: game_id={game_id}, player_id={player_id}')
     
     if game_id not in games:
         return jsonify({'success': False, 'error': 'Game not found'})
     
     game = games[game_id]
-    game.submit_drawing(player_id, drawing_data)
     
-    return jsonify({'success': True})
+    # ✅ 验证：player_id必须存在于游戏的玩家列表中
+    if player_id not in game.players:
+        return jsonify({'success': False, 'error': 'Player not in this game'}), 403
+    
+    # 可选：保存session
+    session['player_id'] = player_id
+    session['game_id'] = game_id
+    
+    game.submit_drawing(player_id, drawing_data)
+    print(f'Game phase after submit: {game.game_phase}')
+    
+    return jsonify({'success': True, 'game': game.to_dict(player_id)})
 
 @app.route('/api/submit-guess', methods=['POST'])
 def submit_guess():
@@ -442,17 +837,51 @@ def submit_guess():
     player_id = data.get('player_id')
     guess_drawing_id = data.get('guess_drawing_id')
     
-    # ✅ 身份验证：检查player_id是否匹配session
-    if session.get('player_id') != player_id:
-        return jsonify({'success': False, 'error': 'Unauthorized'}), 403
+    if game_id not in games:
+        return jsonify({'success': False, 'error': 'Game not found'})
+    
+    game = games[game_id]
+    
+    # ✅ 验证：player_id必须存在于游戏的玩家列表中
+    if player_id not in game.players:
+        return jsonify({'success': False, 'error': 'Player not in this game'}), 403
+
+    # ✅ 规则限制：出题者不参与猜测
+    if player_id == game.current_drawer:
+        return jsonify({'success': False, 'error': 'Drawer cannot guess'}), 403
+    
+    # 可选：保存session
+    session['player_id'] = player_id
+    session['game_id'] = game_id
+    
+    game.submit_guess(player_id, guess_drawing_id)
+    
+    return jsonify({'success': True, 'game': game.to_dict(player_id)})
+
+@app.route('/api/timeout-drawing', methods=['POST'])
+def timeout_drawing():
+    """处理超时未提交的玩家 (自动提交空白画，跳过到下一阶段)"""
+    data = request.json
+    game_id = data.get('game_id')
+    player_id = data.get('player_id')
     
     if game_id not in games:
         return jsonify({'success': False, 'error': 'Game not found'})
     
     game = games[game_id]
-    game.submit_guess(player_id, guess_drawing_id)
     
-    return jsonify({'success': True})
+    # ✅ 验证：player_id必须存在于游戏的玩家列表中
+    if player_id not in game.players:
+        return jsonify({'success': False, 'error': 'Player not in this game'}), 403
+    
+    # 如果玩家已经提交过了，直接返回
+    if player_id in game.drawings:
+        return jsonify({'success': True, 'message': 'Already submitted', 'game': game.to_dict(player_id)})
+    
+    # 提交一个空白画（表示超时未提交）
+    game.submit_drawing(player_id, 'data:image/png;base64,')  # 空白PNG
+    
+    return jsonify({'success': True, 'game': game.to_dict(player_id)})
 
 @app.route('/api/next-round', methods=['POST'])
 def next_round():
@@ -461,14 +890,27 @@ def next_round():
     game_id = data.get('game_id')
     player_id = data.get('player_id')
     
-    # ✅ 身份验证：检查player_id是否匹配session
-    if session.get('player_id') != player_id:
-        return jsonify({'success': False, 'error': 'Unauthorized'}), 403
-    
     if game_id not in games:
         return jsonify({'success': False, 'error': 'Game not found'})
     
     game = games[game_id]
+    
+    # ✅ 验证：player_id必须存在于游戏的玩家列表中
+    if player_id not in game.players:
+        return jsonify({'success': False, 'error': 'Player not in this game'}), 403
+    
+    # 可选：保存session
+    session['player_id'] = player_id
+    session['game_id'] = game_id
+
+    # ✅ 防重复推进：只有在结果阶段才能进入下一轮
+    if game.game_phase != 'result':
+        return jsonify({
+            'success': True,
+            'ignored': True,
+            'game': game.to_dict(player_id)
+        })
+
     game.current_round += 1
     
     if game.start_new_round():
