@@ -109,10 +109,23 @@ function updateUIText() {
         langBtn.textContent = t('language_switch');
     }
     
+    // 更新游戏代码显示
+    const gameCodeDisplay = document.getElementById('gameCodeDisplay');
+    if (gameCodeDisplay) {
+        const codeText = document.getElementById('codeText');
+        const code = codeText ? codeText.textContent : '-';
+        gameCodeDisplay.innerHTML = t('gameCodeDisplay') + ' <strong id="codeText">' + code + '</strong>';
+    }
+    
     // 更新所有带 id 的文本元素
     Object.keys(texts).forEach(key => {
         const element = document.getElementById(key);
         if (element && !element.classList.contains('no-translate')) {
+            // 跳过已经特殊处理的元素
+            if (key === 'gameCodeDisplay' || key === 'game_title' || key === 'language_switch') {
+                return;
+            }
+            
             // 检查是否是特殊的需要保留子元素的元素
             if (key === 'roundInfo' || key === 'roundInfo2' || key === 'roundInfo3') {
                 // 这些元素包含 <span id="currentRound/2/3">数字</span>，需要保留
@@ -121,11 +134,6 @@ function updateUIText() {
                 const currentRoundSpan = element.querySelector(`#${currentRoundId}`);
                 const roundNumber = currentRoundSpan ? currentRoundSpan.textContent : '1';
                 element.innerHTML = t('roundInfo') + ' <span id="' + currentRoundId + '">' + roundNumber + '</span> ' + t('roundInfo');
-            } else if (key === 'gameCodeDisplay') {
-                // 游戏代码显示：保留游戏代码数字
-                const codeText = document.getElementById('codeText');
-                const code = codeText ? codeText.textContent : '-';
-                element.innerHTML = t('gameCodeDisplay') + ' <strong id="codeText">' + code + '</strong>';
             } else if (element.textContent.trim() !== '') {
                 // 其他元素直接替换
                 element.textContent = texts[key];
