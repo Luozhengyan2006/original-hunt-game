@@ -1363,7 +1363,16 @@ async function submitGuess() {
         return;
     }
     
+    // 防止重复提交
+    const submitBtn = document.getElementById('submitGuessBtn');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = t('submitting') || '提交中...';
+    }
+    
     try {
+        console.log('Submitting guess:', gameState.selectedDrawingIndex);
+        
         const response = await fetch('/api/submit-guess', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1375,19 +1384,36 @@ async function submitGuess() {
         });
         
         const data = await response.json();
+        console.log('Guess submit response:', data);
+        
         if (data.success) {
             gameState.gameData = data.game;
+            gameState.gamePhase = data.game.game_phase;
+            
             // 检查是否所有玩家都已猜测
             if (data.game.game_phase === 'result') {
+                console.log('Moving to result phase immediately');
                 showResultPhase();
             } else {
                 // 等待其他玩家完成猜测
+                console.log('Waiting for other players to guess');
                 showWaitingMessage(t('waiting_for_guess'));
                 checkGamePhaseProgress();
+            }
+        } else {
+            alert('提交失败: ' + (data.error || '未知错误'));
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = t('submit_guess') || '提交猜测';
             }
         }
     } catch (error) {
         console.error('Error submitting guess:', error);
+        alert('提交失败，请重试');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = t('submit_guess') || '提交猜测';
+        }
     }
 }
 
