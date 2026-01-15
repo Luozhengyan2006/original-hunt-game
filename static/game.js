@@ -472,6 +472,8 @@ async function joinGame() {
     const gameId = document.getElementById('gameCode').value.trim();
     const playerName = document.getElementById('joinPlayerName').value.trim();
     
+    console.log('joinGame called with:', { gameId, playerName });
+    
     if (!gameId || !playerName) {
         alert(t('please_enter_code_and_name'));
         return;
@@ -481,21 +483,33 @@ async function joinGame() {
     const joinBtn = document.querySelector('button[onclick="joinGame()"]');
     if (joinBtn) {
         joinBtn.disabled = true;
+        joinBtn.textContent = t('loading') || '加载中...';
     }
     
     try {
-        console.log('Joining game:', { game_id: gameId, player_name: playerName });
+        console.log('Sending join request:', { game_id: gameId, player_name: playerName });
         
         const response = await fetch('/api/join-game', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
             body: JSON.stringify({
                 game_id: gameId,
                 player_name: playerName
             })
         });
         
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
+        console.log('Join response:', data);
+        
         if (data.success) {
             gameState.gameId = gameId;
             gameState.playerId = data.player_id;
@@ -512,16 +526,18 @@ async function joinGame() {
             showLobby();
         } else {
             console.error('Join game failed:', data.error);
-            alert(t('join_failed') + ': ' + data.error);
+            alert(t('join_failed') + ': ' + (data.error || 'Unknown error'));
             if (joinBtn) {
                 joinBtn.disabled = false;
+                joinBtn.innerHTML = '<span id="joinGameBtnText">' + t('joinGameBtnText') + '</span>';
             }
         }
     } catch (error) {
         console.error('Error joining game:', error);
-        alert(t('join_game_failed'));
+        alert(t('join_game_failed') + ': ' + error.message);
         if (joinBtn) {
             joinBtn.disabled = false;
+            joinBtn.innerHTML = '<span id="joinGameBtnText">' + t('joinGameBtnText') + '</span>';
         }
     }
 }
