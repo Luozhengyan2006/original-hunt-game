@@ -1248,8 +1248,8 @@ async function submitDrawing() {
         // 根据角色和阶段显示不同的等待消息
         let waitingMessage = t('waiting_for_others');
         if (gameState.isDrawer) {
-            // 出题者提交绘画后，等待修改关键词
-            waitingMessage = t('waiting_to_modify_keywords');
+            // 出题者提交绘画后，等待其他玩家猜测
+            waitingMessage = t('waiting_for_guess') || '等待其他玩家猜测...';
         } else {
             // 其他玩家提交绘画后，等待其他玩家
             if (gameState.gamePhase === 'other_drawing') {
@@ -1552,7 +1552,9 @@ function updateResultPage(scoreData) {
     if (totalScoresList) {
         totalScoresList.innerHTML = '';
         
-        const sorted = Object.entries(gameState.gameData.total_scores || {})
+        // 使用 API 返回的 total_scores (实际是 game.scores)
+        const totalScores = scoreData.total_scores || gameState.gameData.scores || {};
+        const sorted = Object.entries(totalScores)
             .sort((a, b) => b[1] - a[1]);
         
         sorted.forEach(([playerId, score], index) => {
