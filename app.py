@@ -655,7 +655,7 @@ def join_game():
 
 @app.route('/api/change-language', methods=['POST'])
 def change_language():
-    """改变游戏语言 (仅在大厅/setup状态可用)"""
+    """改变游戏语言 - 随时可用，会更新关键词库"""
     data = request.json
     game_id = data.get('game_id')
     player_id = data.get('player_id')
@@ -670,13 +670,19 @@ def change_language():
     if player_id not in game.players:
         return jsonify({'success': False, 'error': 'Player not in this game'}), 403
     
-    # 仅在大厅阶段允许改变语言
-    if game.status != 'setup':
-        return jsonify({'success': False, 'error': 'Cannot change language after game started'})
-    
-    # 改变游戏语言并重新加载关键词
+    # 改变游戏语言并重新加载关键词库
+    old_language = game.language
     game.language = language
     game.keywords = load_keywords_library(language)
+    
+    # 如果游戏正在进行中，需要重新生成当前轮的关键词
+    if game.status == 'playing' and hasattr(game, 'original_keywords'):
+        # 重新从新语言的关键词库中选择
+        game.original_keywords = random.sample(game.keywords, 3)
+        # 如果出题者已经修改了关键词，也需要重置
+        if game.modified_keywords:
+            game.modified_keywords = []
+        print(f'Language changed from {old_language} to {language}, regenerated keywords: {game.original_keywords}')
     
     return jsonify({'success': True, 'game': game.to_dict(player_id)})
 

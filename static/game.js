@@ -182,45 +182,41 @@ async function switchLanguage() {
     // 更新主页面的所有 UI 文本
     updateUIText();
     
-    // 如果游戏已经开始，重新获取游戏数据（关键词会根据语言变化）
+    // 如果游戏已经开始，更改游戏的语言（随时可用）
     if (gameState.gameId && gameState.playerId) {
         try {
-            // 如果在大厅/setup阶段，更改游戏的语言
-            if (gameState.gameData && gameState.gameData.status === 'setup') {
-                const response = await fetch('/api/change-language', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        game_id: gameState.gameId,
-                        player_id: gameState.playerId,
-                        language: gameState.currentLanguage
-                    })
-                });
+            console.log('Changing game language to:', gameState.currentLanguage);
+            
+            const response = await fetch('/api/change-language', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    game_id: gameState.gameId,
+                    player_id: gameState.playerId,
+                    language: gameState.currentLanguage
+                })
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                gameState.gameData = data.game;
+                console.log('Game language changed successfully, keywords updated');
                 
-                const data = await response.json();
-                if (data.success) {
-                    gameState.gameData = data.game;
-                    console.log('Game language changed to:', gameState.currentLanguage);
-                    updateLobby();  // 刷新大厅显示
-                }
-            } else if (gameState.gameData && ['drawer_drawing', 'keywords_modified', 'other_drawing'].includes(gameState.gameData.game_phase)) {
-                // 游戏进行中，重新获取游戏数据（关键词会刷新）
-                const response = await fetch(`/api/get-game/${gameState.gameId}?player_id=${gameState.playerId}`);
-                const data = await response.json();
-                if (data.success) {
-                    gameState.gameData = data.game;
-                    console.log('Game data reloaded after language switch');
-                    
-                    // 刷新当前页面内容
+                // 根据当前状态更新显示
+                if (gameState.gameData.status === 'setup') {
+                    // 在大厅中，刷新大厅显示
+                    updateLobby();
+                } else if (gameState.gameData.status === 'playing') {
+                    // 游戏进行中，刷新当前页面内容
                     const currentPhase = gameState.gameData.game_phase;
-                    if (currentPhase === 'drawer_drawing') {
+                    if (currentPhase === 'drawer_drawing' && gameState.isDrawer) {
                         updateDrawerDrawingPhase();
-                    } else if (currentPhase === 'keywords_modified') {
+                    } else if (currentPhase === 'keywords_modified' && gameState.isDrawer) {
                         updateModifyKeywordsPhase();
                     } else if (currentPhase === 'other_drawing') {
                         updateAllDrawingPhase();
                     }
-                    // 其他阶段不需要重新加载关键词
+                    // 其他阶段（guessing, result）不需要重新加载关键词
                 }
             }
         } catch (error) {
