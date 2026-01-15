@@ -482,15 +482,26 @@ class Game:
     
     def submit_guess(self, player_id, guess_drawer_id):
         """提交猜测: 猜测哪个绘画是出题者的"""
+        print(f'=== SUBMIT_GUESS ===')
+        print(f'Round: {self.current_round}, Phase: {self.game_phase}')
+        print(f'Player {player_id} guessing drawer: {guess_drawer_id}')
+        print(f'Current drawer: {self.current_drawer}')
+        print(f'Existing guesses before: {self.guesses}')
+        
         self.guesses[player_id] = guess_drawer_id
         print(f'Player {player_id} submitted guess. Current guesses: {len(self.guesses)}/{len(self.players) - 1}')
+        print(f'All guesses: {self.guesses}')
         
         # 检查是否所有非绘图者都已提交猜测
         if len(self.guesses) == (len(self.players) - 1):
             # 所有人都提交了猜测，计算分数并进入结果阶段
+            print(f'All non-drawer players submitted! Calculating scores...')
             self.calculate_scores()
             self.game_phase = 'result'
-            print(f'All players submitted guesses! Game phase changed to: {self.game_phase}')
+            print(f'Game phase changed to: {self.game_phase}')
+        else:
+            print(f'Still waiting for {len(self.players) - 1 - len(self.guesses)} more guesses')
+        print(f'===================\n')
     
     def calculate_scores(self):
         """计算本轮分数 (完整规则)"""

@@ -1377,7 +1377,12 @@ async function submitGuess() {
     }
     
     try {
-        console.log('Submitting guess:', gameState.selectedDrawingIndex);
+        console.log('=== SUBMIT GUESS ===');
+        console.log('Current round:', gameState.gameData?.current_round);
+        console.log('Game phase:', gameState.gamePhase);
+        console.log('Selected drawing ID:', gameState.selectedDrawingIndex);
+        console.log('Player ID:', gameState.playerId);
+        console.log('Game ID:', gameState.gameId);
         
         const response = await fetch('/api/submit-guess', {
             method: 'POST',
@@ -1389,6 +1394,7 @@ async function submitGuess() {
             })
         });
         
+        console.log('Response status:', response.status);
         const data = await response.json();
         console.log('Guess submit response:', data);
         
@@ -1407,6 +1413,7 @@ async function submitGuess() {
                 checkGamePhaseProgress();
             }
         } else {
+            console.error('Server returned error:', data.error);
             alert('提交失败: ' + (data.error || '未知错误'));
             if (submitBtn) {
                 submitBtn.disabled = false;
