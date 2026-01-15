@@ -403,6 +403,7 @@ class Game:
         self.id = game_id
         self.language = language
         self.players = {}
+        self.owner_id = None  # 房主ID（第一个玩家）
         self.current_round = 0
         self.status = 'setup'  # setup, playing, finished
         self.keywords = load_keywords_library(language)
@@ -424,6 +425,10 @@ class Game:
     def add_player(self, player_id, name):
         """添加玩家"""
         if len(self.players) < GAME_CONFIG['max_players']:
+            # 第一个玩家是房主
+            if not self.owner_id:
+                self.owner_id = player_id
+            
             self.players[player_id] = {
                 'name': name,
                 'score': 0,
@@ -434,13 +439,8 @@ class Game:
         return False
     
     def start_game(self):
-        """开始游戏（需要所有玩家都准备好）"""
+        """开始游戏（由房主决定）"""
         if len(self.players) < GAME_CONFIG['min_players']:
-            return False
-        
-        # 检查是否所有玩家都已准备
-        all_ready = all(player.get('ready', False) for player in self.players.values())
-        if not all_ready:
             return False
         
         self.status = 'playing'
@@ -601,6 +601,7 @@ class Game:
         return {
             'id': self.id,
             'language': self.language,
+            'owner_id': self.owner_id,  # 房主ID
             'players': self.players,
             'current_round': self.current_round,
             'status': self.status,
@@ -742,12 +743,6 @@ def player_ready():
     
     game.set_player_ready(player_id, ready)
     
-    # 检查是否所有人都准备好了，如果是则自动开始游戏
-    if game.status == 'waiting' and len(game.players) >= GAME_CONFIG['min_players']:
-        all_ready = all(p.get('ready', False) for p in game.players.values())
-        if all_ready:
-            game.start_game()
-    
     return jsonify({
         'success': True,
         'game': game.to_dict(player_id)
@@ -755,7 +750,7 @@ def player_ready():
 
 @app.route('/api/start-game', methods=['POST'])
 def start_game():
-    """开始游戏 (需要所有玩家准备)"""
+    """开始游戏 (只有房主可以开始)"""
     data = request.json
     game_id = data.get('game_id')
     player_id = data.get('player_id')
@@ -769,6 +764,10 @@ def start_game():
     if player_id not in game.players:
         return jsonify({'success': False, 'error': 'Player not in this game'}), 403
     
+    # ✅ 验证：只有房主可以开始游戏
+    if player_id != game.owner_id:
+        return jsonify({'success': False, 'error': 'Only the host can start the game'}), 403
+    
     # 可选：保存session以便后续验证
     session['player_id'] = player_id
     session['game_id'] = game_id
@@ -779,7 +778,7 @@ def start_game():
             'game': game.to_dict(player_id)
         })
     
-    return jsonify({'success': False, 'error': 'Not all players ready'})
+    return jsonify({'success': False, 'error': 'Not enough players'})
 
 @app.route('/api/get-game/<game_id>', methods=['GET'])
 def get_game(game_id):

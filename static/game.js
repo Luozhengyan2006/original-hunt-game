@@ -582,7 +582,8 @@ async function updateLobby() {
                     div.className = 'player-item';
                     const readyIcon = player.ready ? '✅' : '⏳';
                     const isYou = playerId === gameState.playerId ? ' (你)' : '';
-                    div.innerHTML = `👤 ${player.name}${isYou} ${readyIcon}`;
+                    const isHost = playerId === gameState.gameData.owner_id ? ' 👑' : '';
+                    div.innerHTML = `👤 ${player.name}${isHost}${isYou} ${readyIcon}`;
                     playersList.appendChild(div);
                 });
             }
@@ -593,13 +594,16 @@ async function updateLobby() {
                 playerCountEl.textContent = Object.keys(gameState.gameData.players).length;
             }
             
+            // 检查是否是房主
+            const isHost = gameState.playerId === gameState.gameData.owner_id;
+            
             // 更新准备状态提示
             const readyStatus = document.getElementById('readyStatus');
             const readyCount = Object.values(gameState.gameData.players).filter(p => p.ready).length;
             const totalCount = Object.keys(gameState.gameData.players).length;
             if (readyStatus) {
                 if (readyCount === totalCount && totalCount >= 2) {
-                    readyStatus.textContent = '所有玩家已准备！游戏即将开始...';
+                    readyStatus.textContent = isHost ? '所有玩家已准备！点击"开始游戏"开始' : '所有玩家已准备！等待房主开始...';
                     readyStatus.style.color = '#28a745';
                 } else {
                     readyStatus.textContent = `${readyCount}/${totalCount} 玩家已准备`;
@@ -618,6 +622,20 @@ async function updateLobby() {
                 } else {
                     readyBtn.className = 'btn btn-primary';
                     readyBtnText.textContent = '准备';
+                }
+            }
+            
+            // 显示/隐藏开始游戏按钮（只有房主可见）
+            const startGameBtn = document.getElementById('startGameBtn');
+            if (startGameBtn) {
+                if (isHost && totalCount >= 2) {
+                    startGameBtn.style.display = 'inline-block';
+                    // 检查是否所有人都准备好
+                    const allReady = readyCount === totalCount;
+                    startGameBtn.disabled = !allReady;
+                    startGameBtn.style.opacity = allReady ? '1' : '0.5';
+                } else {
+                    startGameBtn.style.display = 'none';
                 }
             }
             
@@ -685,18 +703,8 @@ async function toggleReady() {
         const data = await response.json();
         if (data.success) {
             gameState.gameData = data.game;
-            
-            // 检查游戏是否已开始（所有人都准备好）
-            if (data.game.status === 'playing') {
-                console.log('All players ready! Game starting...');
-                gameState.gameStarted = true;
-                clearInterval(lobbyUpdateInterval);
-                lobbyUpdateInterval = null;
-                startGameRound();
-            } else {
-                // 更新大厅显示
-                updateLobby();
-            }
+            // 更新大厅显示
+            updateLobby();
         }
     } catch (error) {
         console.error('Error toggling ready:', error);
