@@ -637,7 +637,7 @@ async function updateLobby() {
                 console.log('Checking start button visibility - isHost:', isHost, 'totalCount:', totalCount);
                 if (isHost && totalCount >= 2) {
                     console.log('Showing start game button');
-                    startGameBtn.style.display = 'inline-block';
+                    startGameBtn.style.display = 'block';  // 改为 block
                     // 检查是否所有人都准备好
                     const allReady = readyCount === totalCount;
                     console.log('All ready:', allReady, '(', readyCount, '/', totalCount, ')');
