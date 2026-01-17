@@ -673,8 +673,6 @@ function updateLobbyUI() {
     
     console.log('Lobby UI updated');
 }
-    }
-}
 
 function leaveLobby() {
     // 停止所有后台任务，避免退出后仍被轮询/计时器拉回等待页面
