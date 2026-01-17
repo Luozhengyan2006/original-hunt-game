@@ -457,9 +457,26 @@ class Game:
             return True
         return False
     
+    def reset_for_new_game(self):
+        """重置游戏回到准备状态"""
+        self.status = 'waiting'
+        self.current_round = 0
+        self.current_drawer = None
+        self.original_keywords = []
+        self.modified_keywords = []
+        self.drawings = {}
+        self.guesses = {}
+        self.scores = {player_id: 0 for player_id in self.players.keys()}
+        self.round_scores = {}
+        self.game_phase = 'drawer_drawing'
+        # 重置所有玩家准备状态
+        for player_id in self.players:
+            self.players[player_id]['ready'] = False
+    
     def start_new_round(self):
         """开始新一轮"""
-        if self.current_round > GAME_CONFIG['rounds']:
+        # 当轮数超过玩家数时，游戏结束
+        if self.current_round > len(self.players):
             self.status = 'finished'
             return False
         
@@ -1001,10 +1018,13 @@ def next_round():
             'game': game.to_dict(player_id)
         })
     else:
-        print(f'[Next Round] Game over after {game.current_round - 1} rounds')
+        print(f'[Next Round] Game over after {game.current_round - 1} rounds, returning to lobby')
+        # 重置游戏回到大厅准备状态
+        game.reset_for_new_game()
         return jsonify({
             'success': True,
             'game_over': True,
+            'return_to_lobby': True,
             'game': game.to_dict(player_id)
         })
 

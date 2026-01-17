@@ -1740,8 +1740,17 @@ async function nextRound() {
                 console.log('New game state - Round:', data.game.current_round, 'Phase:', gameState.gamePhase, 'Is drawer:', gameState.isDrawer);
                 
                 if (data.game_over) {
-                    console.log('Game over, showing final results');
-                    showGameOverPage();
+                    console.log('Game finished');
+                    if (data.return_to_lobby) {
+                        // 游戏结束，返回大厅
+                        console.log('Returning to lobby for new game');
+                        alert('游戏结束！每个玩家都当了一次出题者。\n\n点击"准备"可以开始新游戏！');
+                        showLobby();
+                    } else {
+                        // 显示最终结果页面
+                        console.log('Showing final results');
+                        showGameOverPage();
+                    }
                 } else {
                     console.log('Starting new round:', data.game.current_round);
                     startGameRound();
