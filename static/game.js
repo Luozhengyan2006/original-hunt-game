@@ -566,92 +566,7 @@ async function updateLobby() {
                 return true;
             }
             
-            // 更新游戏代码
-            const codeText = document.getElementById('codeText');
-            if (codeText) {
-                codeText.textContent = gameState.gameId;
-            }
-            
-            // 更新玩家列表
-            const playersList = document.getElementById('playersList');
-            if (playersList) {
-                playersList.innerHTML = '';
-                
-                Object.entries(gameState.gameData.players).forEach(([playerId, player]) => {
-                    const div = document.createElement('div');
-                    div.className = 'player-item';
-                    const readyIcon = player.ready ? '✅' : '⏳';
-                    const isYou = playerId === gameState.playerId ? ' (你)' : '';
-                    const isHost = playerId === gameState.gameData.owner_id ? ' 👑' : '';
-                    div.innerHTML = `👤 ${player.name}${isHost}${isYou} ${readyIcon}`;
-                    playersList.appendChild(div);
-                });
-            }
-            
-            // 更新玩家数量显示
-            const playerCountEl = document.getElementById('playerCount');
-            if (playerCountEl) {
-                playerCountEl.textContent = Object.keys(gameState.gameData.players).length;
-            }
-            
-            // 检查是否是房主
-            const isHost = gameState.playerId === gameState.gameData.owner_id;
-            console.log('=== LOBBY UPDATE ===');
-            console.log('Current player ID:', gameState.playerId);
-            console.log('Owner ID:', gameState.gameData.owner_id);
-            console.log('Is host:', isHost);
-            console.log('Total players:', totalCount);
-            
-            // 更新准备状态提示
-            const readyStatus = document.getElementById('readyStatus');
-            const readyCount = Object.values(gameState.gameData.players).filter(p => p.ready).length;
-            const totalCount = Object.keys(gameState.gameData.players).length;
-            if (readyStatus) {
-                if (readyCount === totalCount && totalCount >= 2) {
-                    readyStatus.textContent = isHost ? '所有玩家已准备！点击"开始游戏"开始' : '所有玩家已准备！等待房主开始...';
-                    readyStatus.style.color = '#28a745';
-                } else {
-                    readyStatus.textContent = `${readyCount}/${totalCount} 玩家已准备`;
-                    readyStatus.style.color = '#666';
-                }
-            }
-            
-            // 更新准备按钮状态
-            const readyBtn = document.getElementById('readyBtn');
-            const readyBtnText = document.getElementById('readyBtnText');
-            if (readyBtn && readyBtnText && gameState.gameData.players[gameState.playerId]) {
-                const isReady = gameState.gameData.players[gameState.playerId].ready;
-                if (isReady) {
-                    readyBtn.className = 'btn btn-warning';
-                    readyBtnText.textContent = '取消准备';
-                } else {
-                    readyBtn.className = 'btn btn-primary';
-                    readyBtnText.textContent = '准备';
-                }
-            }
-            
-            // 显示/隐藏开始游戏按钮（只有房主可见）
-            const startGameBtn = document.getElementById('startGameBtn');
-            console.log('Start game button element:', startGameBtn);
-            if (startGameBtn) {
-                console.log('Checking start button visibility - isHost:', isHost, 'totalCount:', totalCount);
-                if (isHost && totalCount >= 2) {
-                    console.log('Showing start game button');
-                    startGameBtn.style.display = 'block';  // 改为 block
-                    // 检查是否所有人都准备好
-                    const allReady = readyCount === totalCount;
-                    console.log('All ready:', allReady, '(', readyCount, '/', totalCount, ')');
-                    startGameBtn.disabled = !allReady;
-                    startGameBtn.style.opacity = allReady ? '1' : '0.5';
-                } else {
-                    console.log('Hiding start game button - isHost:', isHost, 'totalCount:', totalCount);
-                    startGameBtn.style.display = 'none';
-                }
-            } else {
-                console.error('Start game button not found in DOM!');
-            }
-            
-            console.log('Lobby updated:', Object.keys(gameState.gameData.players).length, 'players');
+            updateLobbyUI();
             return true;
         } else {
             console.error('Failed to get game data:', data.error);
@@ -660,6 +575,104 @@ async function updateLobby() {
     } catch (error) {
         console.error('Error updating lobby:', error);
         return false;
+    }
+}
+
+function updateLobbyUI() {
+    if (!gameState.gameData) {
+        console.warn('No game data to update UI');
+        return;
+    }
+    
+    // 更新游戏代码
+    const codeText = document.getElementById('codeText');
+    if (codeText) {
+        codeText.textContent = gameState.gameId;
+    }
+    
+    // 更新玩家列表
+    const playersList = document.getElementById('playersList');
+    if (playersList) {
+        playersList.innerHTML = '';
+        
+        Object.entries(gameState.gameData.players).forEach(([playerId, player]) => {
+            const div = document.createElement('div');
+            div.className = 'player-item';
+            const readyIcon = player.ready ? '✅' : '⏳';
+            const isYou = playerId === gameState.playerId ? ' (你)' : '';
+            const isHost = playerId === gameState.gameData.owner_id ? ' 👑' : '';
+            div.innerHTML = `👤 ${player.name}${isHost}${isYou} ${readyIcon}`;
+            playersList.appendChild(div);
+        });
+    }
+    
+    // 更新玩家数量显示
+    const playerCountEl = document.getElementById('playerCount');
+    if (playerCountEl) {
+        playerCountEl.textContent = Object.keys(gameState.gameData.players).length;
+    }
+    
+    // 检查是否是房主
+    const isHost = gameState.playerId === gameState.gameData.owner_id;
+    const readyCount = Object.values(gameState.gameData.players).filter(p => p.ready).length;
+    const totalCount = Object.keys(gameState.gameData.players).length;
+    
+    console.log('=== LOBBY UPDATE ===');
+    console.log('Current player ID:', gameState.playerId);
+    console.log('Owner ID:', gameState.gameData.owner_id);
+    console.log('Is host:', isHost);
+    console.log('Total players:', totalCount);
+    console.log('Ready count:', readyCount);
+    
+    // 更新准备状态提示
+    const readyStatus = document.getElementById('readyStatus');
+    if (readyStatus) {
+        if (readyCount === totalCount && totalCount >= 2) {
+            readyStatus.textContent = isHost ? '所有玩家已准备！点击"开始游戏"开始' : '所有玩家已准备！等待房主开始...';
+            readyStatus.style.color = '#28a745';
+        } else {
+            readyStatus.textContent = `${readyCount}/${totalCount} 玩家已准备`;
+            readyStatus.style.color = '#666';
+        }
+    }
+    
+    // 更新准备按钮状态
+    const readyBtn = document.getElementById('readyBtn');
+    const readyBtnText = document.getElementById('readyBtnText');
+    if (readyBtn && readyBtnText && gameState.gameData.players[gameState.playerId]) {
+        const isReady = gameState.gameData.players[gameState.playerId].ready;
+        if (isReady) {
+            readyBtn.className = 'btn btn-warning';
+            readyBtnText.textContent = '取消准备';
+        } else {
+            readyBtn.className = 'btn btn-primary';
+            readyBtnText.textContent = '准备';
+        }
+    }
+    
+    // 显示/隐藏开始游戏按钮（只有房主可见）
+    const startGameBtn = document.getElementById('startGameBtn');
+    console.log('Start game button element:', startGameBtn);
+    if (startGameBtn) {
+        console.log('Checking start button visibility - isHost:', isHost, 'totalCount:', totalCount);
+        if (isHost && totalCount >= 2) {
+            console.log('Showing start game button');
+            startGameBtn.style.display = 'block';
+            // 检查是否所有人都准备好
+            const allReady = readyCount === totalCount;
+            console.log('All ready:', allReady, '(', readyCount, '/', totalCount, ')');
+            startGameBtn.disabled = !allReady;
+            startGameBtn.style.opacity = allReady ? '1' : '0.5';
+        } else {
+            console.log('Hiding start game button - isHost:', isHost, 'totalCount:', totalCount);
+            startGameBtn.style.display = 'none';
+        }
+    } else {
+        console.error('Start game button not found in DOM!');
+    }
+    
+    console.log('Lobby UI updated');
+}
     }
 }
 
@@ -715,8 +728,19 @@ async function toggleReady() {
         const data = await response.json();
         if (data.success) {
             gameState.gameData = data.game;
-            // 更新大厅显示
-            updateLobby();
+            
+            // 检查游戏是否已开始
+            if (data.game.status === 'playing') {
+                console.log('Game started! Transitioning...');
+                gameState.gameStarted = true;
+                clearInterval(lobbyUpdateInterval);
+                lobbyUpdateInterval = null;
+                startGameRound();
+                return;
+            }
+            
+            // 手动触发大厅更新（不重新获取数据）
+            updateLobbyUI();
         }
     } catch (error) {
         console.error('Error toggling ready:', error);
