@@ -596,6 +596,11 @@ async function updateLobby() {
             
             // 检查是否是房主
             const isHost = gameState.playerId === gameState.gameData.owner_id;
+            console.log('=== LOBBY UPDATE ===');
+            console.log('Current player ID:', gameState.playerId);
+            console.log('Owner ID:', gameState.gameData.owner_id);
+            console.log('Is host:', isHost);
+            console.log('Total players:', totalCount);
             
             // 更新准备状态提示
             const readyStatus = document.getElementById('readyStatus');
@@ -627,16 +632,23 @@ async function updateLobby() {
             
             // 显示/隐藏开始游戏按钮（只有房主可见）
             const startGameBtn = document.getElementById('startGameBtn');
+            console.log('Start game button element:', startGameBtn);
             if (startGameBtn) {
+                console.log('Checking start button visibility - isHost:', isHost, 'totalCount:', totalCount);
                 if (isHost && totalCount >= 2) {
+                    console.log('Showing start game button');
                     startGameBtn.style.display = 'inline-block';
                     // 检查是否所有人都准备好
                     const allReady = readyCount === totalCount;
+                    console.log('All ready:', allReady, '(', readyCount, '/', totalCount, ')');
                     startGameBtn.disabled = !allReady;
                     startGameBtn.style.opacity = allReady ? '1' : '0.5';
                 } else {
+                    console.log('Hiding start game button - isHost:', isHost, 'totalCount:', totalCount);
                     startGameBtn.style.display = 'none';
                 }
+            } else {
+                console.error('Start game button not found in DOM!');
             }
             
             console.log('Lobby updated:', Object.keys(gameState.gameData.players).length, 'players');
