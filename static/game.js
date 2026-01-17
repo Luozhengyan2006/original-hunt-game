@@ -394,6 +394,12 @@ function showGuessing() {
 
 function showResult() {
     showPage('result');
+    // 重置"下一轮"按钮状态
+    const nextBtn = document.getElementById('nextRoundBtn');
+    if (nextBtn) {
+        nextBtn.disabled = false;
+        nextBtn.textContent = t('next_round') || '下一轮';
+    }
 }
 
 function showGameOver() {
@@ -1653,6 +1659,8 @@ async function showResultPhase() {
         if (data.success) {
             showResult();
             updateResultPage(data);
+            // 在结果阶段启动轮询，以便检测游戏是否结束返回大厅
+            checkGamePhaseProgress();
         }
     } catch (error) {
         console.error('Error getting scores:', error);
