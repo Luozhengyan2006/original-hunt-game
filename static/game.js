@@ -1580,7 +1580,25 @@ function checkGamePhaseProgress() {
             
             if (data.success) {
                 const newPhase = data.game.game_phase;
-                console.log('Progress check - Current phase:', gameState.gamePhase, 'New phase:', newPhase);
+                const newStatus = data.game.status;
+                console.log('Progress check - Current phase:', gameState.gamePhase, 'New phase:', newPhase, 'Status:', newStatus);
+                
+                // 如果游戏返回大厅（游戏结束），停止轮询并返回大厅
+                if (newStatus === 'waiting' && gameState.currentPage !== 'lobby') {
+                    console.log('Game returned to lobby, stopping progress check');
+                    gameState.gameData = data.game;
+                    gameState.gamePhase = newPhase;
+                    
+                    // 清除轮询
+                    if (gameState.progressInterval) {
+                        clearInterval(gameState.progressInterval);
+                        gameState.progressInterval = null;
+                    }
+                    
+                    alert('游戏结束！每个玩家都当了一次出题者。\n\n点击"准备"可以开始新游戏！');
+                    showLobby();
+                    return;
+                }
                 
                 // 如果游戏阶段发生变化，更新状态
                 if (newPhase !== gameState.gamePhase) {
