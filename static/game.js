@@ -1727,9 +1727,17 @@ async function nextRound() {
                     gameState.gameData = gameData.game;
                     gameState.gamePhase = gameData.game.game_phase;
                     gameState.isDrawer = gameData.game.current_drawer === gameState.playerId;
-                    console.log('Updated game state - Phase:', gameState.gamePhase, 'Is drawer:', gameState.isDrawer);
-                    // 根据当前阶段显示对应页面
-                    startGameRound();
+                    console.log('Updated game state - Status:', gameData.game.status, 'Phase:', gameState.gamePhase, 'Is drawer:', gameState.isDrawer);
+                    
+                    // 检查游戏是否已经结束并返回大厅
+                    if (gameData.game.status === 'waiting') {
+                        console.log('Game ended, returning to lobby');
+                        alert('游戏结束！每个玩家都当了一次出题者。\n\n点击"准备"可以开始新游戏！');
+                        showLobby();
+                    } else {
+                        // 根据当前阶段显示对应页面
+                        startGameRound();
+                    }
                 }
             } else {
                 console.log('Next round started successfully');
