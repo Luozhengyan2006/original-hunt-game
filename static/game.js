@@ -1342,13 +1342,24 @@ async function submitDrawing() {
         }
         
         // 成功！更新游戏状态并显示等待页面
+        console.log('=== DRAWING SUBMITTED ===');
         console.log('Drawing submitted successfully!');
         console.log('New game phase:', data.game.game_phase);
+        console.log('Current drawings count:', Object.keys(data.game.drawings || {}).length);
+        console.log('Total players:', Object.keys(data.game.players || {}).length);
         console.log('Is drawer:', gameState.isDrawer);
+        console.log('Should transition to guessing:', Object.keys(data.game.drawings || {}).length === Object.keys(data.game.players || {}).length);
         
         gameState.gameData = data.game;
         gameState.gamePhase = data.game.game_phase;
         gameState.isDrawer = data.game.current_drawer === gameState.playerId;
+        
+        // 如果所有人都提交了，应该直接进入猜测阶段
+        if (data.game.game_phase === 'guessing') {
+            console.log('All players submitted! Moving to guessing phase immediately');
+            updateGuessingPhase();
+            return;
+        }
         
         // 根据角色和阶段显示不同的等待消息
         let waitingMessage = t('waiting_for_others');
