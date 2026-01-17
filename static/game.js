@@ -1719,7 +1719,7 @@ async function nextRound() {
         if (data.success) {
             if (data.ignored) {
                 // 已经有其他玩家推进了游戏
-                console.log('Round already advanced by another player');
+                console.log('Round already advanced by another player, fetching latest state...');
                 // 重新获取游戏状态
                 const gameResp = await fetch(`/api/get-game/${gameState.gameId}?player_id=${gameState.playerId}`);
                 const gameData = await gameResp.json();
@@ -1727,20 +1727,17 @@ async function nextRound() {
                     gameState.gameData = gameData.game;
                     gameState.gamePhase = gameData.game.game_phase;
                     gameState.isDrawer = gameData.game.current_drawer === gameState.playerId;
+                    console.log('Updated game state - Phase:', gameState.gamePhase, 'Is drawer:', gameState.isDrawer);
                     // 根据当前阶段显示对应页面
-                    if (gameData.game.game_phase === 'keywords_modified') {
-                        if (gameState.isDrawer) {
-                            showModifyKeywords();
-                        } else {
-                            showWaitingForDrawer();
-                        }
-                    }
+                    startGameRound();
                 }
             } else {
+                console.log('Next round started successfully');
                 gameState.gameData = data.game;
                 gameState.gamePhase = data.game.game_phase;
                 gameState.isDrawer = data.game.current_drawer === gameState.playerId;
                 gameState.selectedDrawingIndex = null;
+                console.log('New game state - Round:', data.game.current_round, 'Phase:', gameState.gamePhase, 'Is drawer:', gameState.isDrawer);
                 
                 if (data.game_over) {
                     console.log('Game over, showing final results');
