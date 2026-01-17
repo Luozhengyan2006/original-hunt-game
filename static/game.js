@@ -282,6 +282,12 @@ function showJoinGame() {
 
 function showLobby() {
     showPage('lobby');
+    // 确保按钮初始状态正确
+    setTimeout(() => {
+        if (gameState.gameData) {
+            updateLobbyUI();
+        }
+    }, 100);
 }
 
 function showModifyKeywords() {
